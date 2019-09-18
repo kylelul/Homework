@@ -1,0 +1,39 @@
+/* --------------------------
+Jerry Wu
+example for ECE6213
+*/ 
+
+
+module testcounter_4b();
+ wire [3:0] out,out1,out2;
+ reg reset;
+ reg clk;
+ reg [11:0] counter_comb;
+ counter Jerry_counter1(out,reset,clk);
+ counter Jerry_counter2(out1,reset,clk);
+ counter Jerry_counter3(out2,reset,clk);	
+
+ always@(posedge clk or posedge reset)
+   if(reset)
+	counter_comb <= 12'hfff;
+   else
+	counter_comb <= {out,out1,out2};
+
+
+ initial
+  begin
+  #0 reset=1'b1;
+  #15 reset=1'b0;
+  #850  $finish;
+  end
+
+ initial clk=1'b0;
+ always #8 clk=~clk;
+
+ initial
+  begin
+   $shm_open ("mywave.db");
+   $shm_probe (testcounter_4b,"AS");
+   $shm_save;
+ end
+endmodule
